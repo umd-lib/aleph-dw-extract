@@ -1,0 +1,9 @@
+#exclude directories with dates
+/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/
+/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/*
+#ignore sql files
+/sql/*
+*.sql
+*.lst
+*.zip
+script*
