@@ -1,0 +1,51 @@
+#!/bin/csh -f
+
+# daily_dw_dump
+#
+# Main script to fire up daily dump for Data warehouse
+#
+# Revision History
+#
+#   2018/09/20: Hans
+#     - first cut
+#
+
+if ($#argv != 1) then
+    echo "Usage: $0 env"
+    exit
+endif
+
+set env = $argv[1]
+
+# Set the correct aleph user with env variable
+source /aleph/home/m$env/.cshrc
+source $alephm_dev/alephm/prof_master
+
+if (-f $alephe_scratch/aleph_stop) then
+    echo Error: Aleph is down
+    exit 1
+endif
+
+echo "`date` ** DW dump starting **"
+
+cd $lims_base/dw
+
+set today = `/lims/bin/date_diff 0`
+set yesterday = `/lims/bin/date_diff -1`
+
+setenv dir $today
+setenv start  ${yesterday}034000000001
+setenv end        ${today}034000000000
+
+# make working directory
+mkdir -p $dir
+
+echo "start $start"
+echo "end   $end"
+
+foreach lib (mai01 mai60 mai50)
+    echo "`date` ** dumping $lib **"
+    csh -f ./dw_dump_library $lib
+end
+
+echo "`date` ** DW dump done "

@@ -1,0 +1,43 @@
+#!/bin/csh -f
+
+# dw_dump_table
+#
+# Script to dump specific table
+#
+# Environment variables:
+#   dir   working directory
+#   start first timestamp to extract
+#   end   last timestamp to extract
+#
+# Revision History
+#
+#   2018/09/20: Hans
+#     - first cut
+#
+
+if ($#argv != 2) then
+    echo "Usage: $0 lib table"
+    exit
+endif
+
+set lib = $argv[1]
+set pass = `get_ora_passwd $lib`
+set table = $argv[2]
+
+echo "`date` in dw_dump_table $lib $table"
+
+set flagfile = $dir/${lib}_${table}_flags
+set datafile = $dir/${lib}_${table}_data
+
+set table_u = `echo $table | tr '[a-z]' '[A-Z]'`
+echo $table_u
+grep " $table_u " $dir/${lib}_z800_b | grep -v ^Z > $flagfile
+if (-s $flagfile) then
+    if ($table_u == Z00) then
+	cut -c23- $flagfile | doc-extract -l $lib -d > $datafile
+    else
+	dw_table_extract $lib $table $flagfile $datafile
+    endif
+else
+    cp /dev/null $dir/${lib}_${table}_data
+endif

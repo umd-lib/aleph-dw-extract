@@ -1,0 +1,106 @@
+#!/bin/csh -f
+
+# dw_dump
+#
+# Dump interesting files for data warehouse
+#
+# Revision History
+#
+#   2018/08/31: Hans
+#     - first cut
+#
+
+if ($#argv != 3) then
+    echo "Usage: $0 env lib prefix"
+    exit
+endif
+
+set env = $argv[1]
+set lib = $argv[2]
+set pre = $argv[3]
+
+# Set the correct aleph user with env variable
+source /aleph/home/m$env/.cshrc
+source $alephm_dev/alephm/prof_master
+
+if (-f $alephe_scratch/aleph_stop) then
+    echo Error: Aleph is down
+    exit 1
+endif
+
+# Check for a valid library
+if `printenv ${lib}_dev` == "" then
+  echo Error: invalid library: $lib
+  exit 1
+endif
+
+
+echo ""
+echo "`date` ** Dumping MAI50 tables **"
+
+set lib = MAI50
+set pass = `get_ora_passwd $lib`
+
+sqlplus  << EOF
+$lib/$pass
+set timing on
+set time on
+set termout on
+create table ${pre}_z900a tablespace work as select * from z900;
+create table ${pre}_z303 tablespace work as select * from z303;
+create table ${pre}_z304 tablespace work as select * from z304;
+create table ${pre}_z305 tablespace work as select * from z305;
+create table ${pre}_z308 tablespace work as select * from z308;
+create table ${pre}_z35 tablespace work as select * from z35;
+create table ${pre}_z36 tablespace work as select * from z36;
+create table ${pre}_z36h tablespace work as select * from z36h;
+create table ${pre}_z30 tablespace work as select * from z30;
+create table ${pre}_z30h tablespace work as select * from z30h;
+create table ${pre}_z13 tablespace work as select * from z13;
+create table ${pre}_z13u tablespace work as select * from z13u;
+create table ${pre}_z103 tablespace work as select * from z103;
+create table ${pre}_z00 tablespace work as select * from z00;
+create table ${pre}_z900b tablespace work as select * from z900;
+EOF
+
+echo ""
+echo "`date` ** Dumping MAI60 tables **"
+
+set lib = MAI60
+set pass = `get_ora_passwd $lib`
+
+sqlplus  << EOF
+$lib/$pass
+set timing on
+set time on
+set termout on
+create table ${pre}_z900a tablespace work as select * from z900;
+create table ${pre}_z13 tablespace work as select * from z13;
+create table ${pre}_z13u tablespace work as select * from z13u;
+create table ${pre}_z103 tablespace work as select * from z103;
+create table ${pre}_z00 tablespace work as select * from z00;
+create table ${pre}_z900b tablespace work as select * from z900;
+EOF
+
+echo ""
+echo "`date` ** Dumping MAI01 tables **"
+
+set lib = MAI01
+set pass = `get_ora_passwd $lib`
+
+sqlplus  << EOF
+$lib/$pass
+set timing on
+set time on
+set termout on
+create table ${pre}_z900a tablespace work as select * from z900;
+create table ${pre}_z13 tablespace work as select * from z13;
+create table ${pre}_z13u tablespace work as select * from z13u;
+create table ${pre}_z103 tablespace work as select * from z103;
+create table ${pre}_z00 tablespace work as select * from z00;
+create table ${pre}_z900b tablespace work as select * from z900;
+EOF
+
+echo "`date` ** done **"
+exit
+

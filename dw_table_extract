@@ -1,0 +1,73 @@
+#!/lims/bin/perl
+
+use DBI qw(:sql_types);
+
+use constant LONGREADLEN => 20 * 1024;
+
+use bytes;
+
+if ($#ARGV != 3) {
+    print STDERR "Bad number of parameters\n";
+    exit 1;
+}
+
+$lib = $ARGV[0];
+$table = $ARGV[1];
+$infile = $ARGV[2];
+$outfile = $ARGV[3];
+
+$keylength = 0;
+
+SetupSql();
+
+open IN, "<$infile" or die "Could not open input file $infile.";
+open OUT, ">$outfile" or die "Could not open output file $outfile.";
+
+while (<IN>) {
+    chomp;
+    $flag = substr($_,0,1);
+    $key = substr($_,22);
+    $sth->bind_param(1,$key,SQL_CHAR);
+    $sth->execute();
+    $a = $sth->fetchrow_arrayref();
+    if ($a) {
+	if ($flag eq 'D') {
+	    print STDERR "Unexpected result for $flag $key\n";
+	} else {
+	    print OUT "$flag\t$key\t",$a->[0],"\n";
+	}
+    } else {
+	if ($flag eq 'D') {
+	    print OUT "$flag\t$key\n";
+	} else {
+	    print STDERR "Unexpected missing record for $flag $key\n";
+	}
+    }
+}
+
+
+sub SetupSql {
+
+    $insql = "sql/$table";
+    open IN,"<$insql" or die "Could not open input file $insql.";
+
+    $sql = '';
+    while (<IN>) {
+	chomp;
+	if ( /^keylength=(\d+)$/ ) {
+	    $keylength = $1;
+	} else {
+	    $sql .= "$_ ";
+	}
+    }
+    close IN;
+	    
+
+    $pass = `get_ora_passwd $lib`;
+
+    chomp $pass;
+    $attr = { RaiseError => 1, AutoCommit => 0, LongReadLen => LONGREADLEN };
+    $dbh = DBI->connect("DBI:Oracle:$ENV{'aleph_db'}", $lib, $pass, $attr);
+    $sth = $dbh->prepare($sql);
+}
+

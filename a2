@@ -1,0 +1,48 @@
+#!/bin/perl
+
+$oldt = '';
+$oldk = '';
+$oldf = '';
+$flags = '';
+
+while (<>) {
+    # print $_;
+    chomp;
+    $f = substr($_,0,1);
+    $ts = substr($_,3,20);
+    $t = substr($_,25,10);
+    $k = substr($_,37);
+    if ($k ne $oldk || $t ne $oldt) {
+	dumpit();
+    }
+    if ($f ne $oldf) {
+	$flags .= $f;
+	$oldf = $f;
+    }
+    
+}
+dumpit();
+
+
+sub dumpit
+{
+    if ($flags) {
+	$op = '?';
+	$first = substr($flags,0,1);
+	$last  = substr($flags,-1,1);
+	if ($first eq 'D' && $last eq 'I') {
+	    $op = 'U';
+	} elsif ($first eq 'I' && $last eq 'D') {
+	    $op = 'Z';
+	} elsif ($first eq 'U' && $last eq 'D') {
+	    $op = 'D';
+	} else {
+	    $op = $first;
+	}
+	printf "%-10s %s %s\n",$op,$oldt,$oldk;
+    }
+    $flags = '';
+    $oldt = $t;
+    $oldk = $k;
+    $oldf = '';
+}

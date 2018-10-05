@@ -1,0 +1,88 @@
+#!/bin/csh -f
+
+# create_indexes
+#
+# Create primary indexes for dw tables
+#
+# Revision History
+#
+#   2018/09/05: Hans
+#     - first cut
+#
+
+if ($#argv != 1) then
+    echo "Usage: $0 prefix"
+    exit
+endif
+
+set pre = $argv[1]
+
+echo ""
+echo "`date` ** Indexing MAI50 tables **"
+
+set lib = MAI50
+set pass = `get_ora_passwd $lib`
+
+sqlplus  << EOF
+$lib/$pass
+set timing on
+set time on
+set termout on
+create index ${pre}_z900a_id on ${pre}_z900a (z900_del_time_stamp) tablespace work;
+create unique index ${pre}_z303_id on ${pre}_z303 (z303_rec_key asc) tablespace work;
+create unique index ${pre}_z304_id on ${pre}_z304 (z304_rec_key asc) tablespace work;
+create unique index ${pre}_z305_id on ${pre}_z305 (z305_rec_key asc) tablespace work;
+create unique index ${pre}_z308_id on ${pre}_z308 (z308_rec_key asc) tablespace work;
+create unique index ${pre}_z35_id on ${pre}_z35 (z35_time_stamp) tablespace work;
+create unique index ${pre}_z36_id on ${pre}_z36 (z36_rec_key asc) tablespace work;
+create unique index ${pre}_z36h_id on ${pre}_z36h (z36h_number asc) tablespace work;
+create unique index ${pre}_z30_id on ${pre}_z30 (z30_rec_key asc) tablespace work;
+create unique index ${pre}_z30h_id on ${pre}_z30h (z30h_rec_key asc) tablespace work;
+create unique index ${pre}_z13_id on ${pre}_z13 (z13_rec_key asc) tablespace work;
+create unique index ${pre}_z13u_id on ${pre}_z13u (z13u_rec_key asc) tablespace work;
+create unique index ${pre}_z103_id on ${pre}_z103 (z103_rec_key asc) tablespace work;
+--create unique index ${pre}_z00_id on ${pre}_z00 (z00_doc_number asc) tablespace work;
+create index ${pre}_z900b_id on ${pre}_z900b (z900_del_time_stamp asc) tablespace work;
+EOF
+
+echo ""
+echo "`date` ** Indexing MAI60 tables **"
+
+set lib = MAI60
+set pass = `get_ora_passwd $lib`
+
+sqlplus  << EOF
+$lib/$pass
+set timing on
+set time on
+set termout on
+--create index ${pre}_z900a_id on ${pre}_z900a (z900_del_time_stamp asc) tablespace work;
+create unique index ${pre}_z13_id on ${pre}_z13 (z13_rec_key asc) tablespace work;
+create unique index ${pre}_z13u_id on ${pre}_z13u (z13u_rec_key asc) tablespace work;
+create unique index ${pre}_z103_id on ${pre}_z103 (z103_rec_key asc) tablespace work;
+--create unique index ${pre}_z00_id on ${pre}_z00 (z00_doc_number asc) tablespace work;
+--create index ${pre}_z900b_id on ${pre}_z900b (z900_del_time_stamp) tablespace work;
+EOF
+
+echo ""
+echo "`date` ** Indexing MAI01 tables **"
+
+set lib = MAI01
+set pass = `get_ora_passwd $lib`
+
+sqlplus  << EOF
+$lib/$pass
+set timing on
+set time on
+set termout on
+create index ${pre}_z900a_id on ${pre}_z900a (z900_del_time_stamp asc) tablespace work;
+create unique index ${pre}_z13_id on ${pre}_z13 (z13_rec_key asc) tablespace work;
+create unique index ${pre}_z13u_id on ${pre}_z13u (z13u_rec_key asc) tablespace work;
+create unique index ${pre}_z103_id on ${pre}_z103 (z103_rec_key asc) tablespace work;
+--create unique index ${pre}_z00_id on ${pre}_z00 (z00_doc_number asc) tablespace work;
+create index ${pre}_z900b_id on ${pre}_z900b (z900_del_time_stamp asc) tablespace work;
+EOF
+
+echo "`date` ** done **"
+exit
+

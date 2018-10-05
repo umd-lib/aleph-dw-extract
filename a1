@@ -1,0 +1,36 @@
+#!/bin/perl
+
+$oldt = '';
+$oldk = '';
+$oldf = '';
+$flags = '';
+
+while (<>) {
+    # print $_;
+    chomp;
+    $f = substr($_,0,1);
+    $ts = substr($_,3,20);
+    $t = substr($_,25,10);
+    $k = substr($_,37);
+    if ($k ne $oldk || $t ne $oldt) {
+	dumpit();
+    }
+    if ($f ne $oldf) {
+	$flags .= $f;
+	$oldf = $f;
+    }
+    
+}
+dumpit();
+
+
+sub dumpit
+{
+    if ($flags) {
+	printf "%-10s %s %s\n",$flags,$oldt,$oldk;
+    }
+    $flags = '';
+    $oldt = $t;
+    $oldk = $k;
+    $oldf = '';
+}

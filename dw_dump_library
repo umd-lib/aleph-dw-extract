@@ -1,0 +1,61 @@
+#!/bin/csh -f
+
+# dw_dump_library
+#
+# Script to dump DW tables for one library
+#
+# Environment variables:
+#   dir   working directory
+#   start first timestamp to extract
+#   end   last timestamp to extract
+#
+# Revision History
+#
+#   2018/09/20: Hans
+#     - first cut
+#
+
+if ($#argv != 1) then
+    echo "Usage: $0 lib"
+    exit
+endif
+
+set lib = $argv[1]
+set pass = `get_ora_passwd $lib`
+
+echo "`date` in dw_dump_library $lib"
+
+set tables = ''
+
+if ($lib == mai01) then
+    set tables = 'z00 z103 z13 z13u'
+else if ($lib == mai60) then
+    set tables = 'z00 z103 z13 z13u'
+else if ($lib == mai50) then
+    set tables = 'z00 z103 z13 z13u z30 z303 z304 z305 z308 z30h z35 z36 z36h'
+endif
+
+echo tables: $tables
+
+# extract trigger table
+sqlplus -s <<EOF > /dev/null
+$lib/$pass
+set pause off
+set pagesize 0
+set lin 700
+set trimspool on
+set termout off
+set feedback off
+spool $dir/${lib}_z800.lst
+select z800_action,z800_time_stamp,z800_rec_type,z800_rec_key from z800
+where z800_time_stamp between '$start' and '$end'
+order by 3,4,2;
+EOF
+
+./a1 $dir/${lib}_z800.lst > $dir/${lib}_z800_a
+
+./a2 $dir/${lib}_z800.lst > $dir/${lib}_z800_b
+
+foreach table ($tables)
+    dw_dump_table $lib $table
+end
