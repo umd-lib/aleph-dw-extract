@@ -22,13 +22,14 @@ def setup_sql():
     sql = ''
     try:
         with open(in_sql, 'r') as in_sql:
-            for line in in_sql:
-                line = line.rstrip()
-                keylength_match = re.match('keylength=(\d+)$', line)
-                if bool(keylength_match):
-                    keylength = keylength_match[0]
-                else:
-                    sql = sql + line + ' '
+#            for line in in_sql:
+#                line = line.rstrip()
+#                keylength_match = re.match('keylength=(\d+)$', line)
+#                if bool(keylength_match):
+#                    keylength = keylength_match[0]
+#                else:
+#                    sql = sql + line + ' '
+            sql = in_sql.read()
             return sql
                     
     except:
@@ -52,7 +53,10 @@ def get_ora_passwd():
 # concatenate parts of SQL together from the infile
 sql = setup_sql()
 print sql
-pdb.set_trace()
+
+"""testing diff sql without traintracks and tabs"""
+# remove extra spaces, traintracks, and tabs
+
 
 # connect to Oracle
 password = get_ora_passwd().rstrip()
@@ -69,7 +73,6 @@ class FileReadException(Exception):
 
 # read infile
 def read_in_file(infile):
-    in_contents = ''
     try:
 	with open(infile, "rb") as file:
             in_contents = file.read().decode('utf-8').splitlines()
@@ -93,13 +96,11 @@ for line in in_contents:
     print line
     line = line.rstrip().encode('utf-8')
     flag = line[0]
-    key = line[-12:] # last twelve digits
+    key = line[-15:] # last fifteen digits
     # bind key to sql where the :1 variable is
     cursor.execute(sql, key=key)
-    #pdb.set_trace()
     row = cursor.fetchall()
     if row:
-        
         row_data = row[0][0]
         if flag == 'D':
             print "Unexpected result for: " + str(flag) + ' ' + str(key) + '\n'
@@ -114,4 +115,5 @@ for line in in_contents:
 
 # close OUT 
 OUT.close()                    
+
 
