@@ -16,22 +16,21 @@ outfile = sys.argv[4]
 
 # function to set up the SQL
 def setup_sql():
-    #in_sql = "sql/" + table
-    # test sql
-    in_sql = "test/testsql/" + table
+    in_sql = "sql/" + table
     sql = ''
     try:
         with open(in_sql, 'r') as in_sql:
-#            for line in in_sql:
-#                line = line.rstrip()
-#                keylength_match = re.match('keylength=(\d+)$', line)
-#                if bool(keylength_match):
-#                    keylength = keylength_match[0]
-#                else:
-#                    sql = sql + line + ' '
-            sql = in_sql.read()
+            for line in in_sql:
+                line = line.rstrip()
+		# look for ? and change to :key
+		line = line.replace('?', ':key')
+                keylength_match = re.match('keylength=(\d+)$', line)
+                if bool(keylength_match):
+                    keylength = keylength_match[0]
+                else:
+                    sql = sql + line + ' '
+            #sql = in_sql.read()
             return sql
-                    
     except:
         print "Could not open in_sql file"
     
@@ -40,28 +39,18 @@ def oracle_connect(library, password):
     connection.autocommit = False
     return connection
 
-
 def get_ora_passwd():
     # get the oracle password
-    session  = Popen(['get_ora_passwd','mai50'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    session  = Popen(['get_ora_passwd', library], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     output, err = session.communicate()
     password = output
     return password
     
-
-
 # concatenate parts of SQL together from the infile
 sql = setup_sql()
-print sql
-
-"""testing diff sql without traintracks and tabs"""
-# remove extra spaces, traintracks, and tabs
-
-
 # connect to Oracle
 password = get_ora_passwd().rstrip()
 connection = oracle_connect(library, password)
-print connection
 # prepare cursor
 cursor = connection.cursor()
 cursor.prepare(sql)
@@ -93,17 +82,17 @@ OUT = open_out_file(outfile)
 
 # use the flag and key from the flag file to build SQL statements
 for line in in_contents:
-    print line
+    #print line
     line = line.rstrip().encode('utf-8')
     flag = line[0]
-    key = line[-15:] # last fifteen digits
+    key = line[22:] # last fifteen digits
     # bind key to sql where the :1 variable is
     cursor.execute(sql, key=key)
     row = cursor.fetchall()
     if row:
         row_data = row[0][0]
         if flag == 'D':
-            print "Unexpected result for: " + str(flag) + ' ' + str(key) + '\n'
+            print "Unexpected result for: " + str(flag) + ' ' + str(key)
         else:
             # check this row[0] business
             OUT.write(str(flag)+'\t'+str(key)+'\t' + str(row_data) + '\n')
@@ -111,7 +100,7 @@ for line in in_contents:
         if flag == 'D':
             OUT.write(str(flag)+'\t'+str(key)+'\n')
         else:
-            print "Unexpected missing record for: " + str(flag) + ' ' + str(key) + '\n'
+            print "Unexpected missing record for: " + str(flag) + ' ' + str(key)
 
 # close OUT 
 OUT.close()                    
