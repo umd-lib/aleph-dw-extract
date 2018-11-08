@@ -85,7 +85,7 @@ for line in in_contents:
     #print line
     line = line.rstrip().encode('utf-8')
     flag = line[0]
-    key = line[22:] # last fifteen digits
+    key = line[22:] # character 22 to the end
     # bind key to sql where the :1 variable is
     cursor.execute(sql, key=key)
     row = cursor.fetchall()
