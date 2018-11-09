@@ -86,7 +86,7 @@ for line in in_contents:
     line = line.rstrip().encode('utf-8')
     flag = line[0]
     key = line[22:] # character 22 to the end
-    # bind key to sql where the :1 variable is
+    # bind key to sql where the :key variable is
     cursor.execute(sql, key=key)
     row = cursor.fetchall()
     if row:
