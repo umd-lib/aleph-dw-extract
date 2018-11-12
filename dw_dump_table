@@ -38,6 +38,7 @@ if (-s $flagfile) then
     else
 	dw_table_extract $lib $table $flagfile $datafile
 	dw_table_extract.py $lib $table $flagfile $datafile.new
+	cmp $datafile $datafile.new
     endif
 else
     cp /dev/null $dir/${lib}_${table}_data
