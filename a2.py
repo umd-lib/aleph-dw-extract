@@ -3,13 +3,6 @@ import fileinput
 import pdb
 import sys
 
-# write to filename based on cli argument
-#lst_filename = sys.argv[1]
-#lib = lst_filename.split('_')[0]
-#tab = lst_filename.split('_')[1].split('.')[0]
-#filename = lib + "_" + tab + "_b"
-#f = open(filename, 'w+')
-
 
 # class to parse lines
 class ParsedLine:
@@ -46,8 +39,7 @@ class ActionSeries:
 	    option = first
 	
         # format and write output
-	#f.write(option.ljust(10) + ' ' + self.table + ' ' + self.key + '\n')
-        print(option.ljust(10) + ' ' + self.table + ' ' + self.key + '\n')
+        print(option.ljust(10) + ' ' + self.table + ' ' + self.key)
     
 # create ParsedLine object for every line in input file
 #lines = [ParsedLine(line) for line in fileinput.input()]
@@ -69,9 +61,7 @@ for line in lines:
     # create new action series for non-matching or first iteration line
     all_action_series.append(ActionSeries(line))
 
-# write to file
+# write to standard output
 for a in all_action_series:
     a.print_final_data()
     
-# close file after writing
-#f.close()
