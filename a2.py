@@ -4,11 +4,11 @@ import pdb
 import sys
 
 # write to filename based on cli argument
-lst_filename = sys.argv[1]
-lib = lst_filename.split('_')[0]
-tab = lst_filename.split('_')[1].split('.')[0]
-filename = lib + "_" + tab + "_b"
-f = open(filename, 'w+')
+#lst_filename = sys.argv[1]
+#lib = lst_filename.split('_')[0]
+#tab = lst_filename.split('_')[1].split('.')[0]
+#filename = lib + "_" + tab + "_b"
+#f = open(filename, 'w+')
 
 
 # class to parse lines
@@ -32,7 +32,7 @@ class ActionSeries:
 	self.lines.append(parsed_line)
 	self.flags += parsed_line.flag
     
-    def write_final_data(self):
+    def print_final_data(self):
         # determine final flag action
 	first = self.flags[0]
 	last = self.flags[-1]
@@ -46,8 +46,8 @@ class ActionSeries:
 	    option = first
 	
         # format and write output
-	f.write(option.ljust(10) + ' ' + self.table + ' ' + self.key + '\n')
-        
+	#f.write(option.ljust(10) + ' ' + self.table + ' ' + self.key + '\n')
+        print(option.ljust(10) + ' ' + self.table + ' ' + self.key + '\n')
     
 # create ParsedLine object for every line in input file
 #lines = [ParsedLine(line) for line in fileinput.input()]
@@ -71,6 +71,7 @@ for line in lines:
 
 # write to file
 for a in all_action_series:
-    a.write_final_data()
+    a.print_final_data()
+    
 # close file after writing
-f.close()
+#f.close()
