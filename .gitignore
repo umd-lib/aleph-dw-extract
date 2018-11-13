@@ -3,9 +3,7 @@
 /[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/*
 #ignore venv
 /venv
-#ignore sql files
-/sql/*
-*.sql
 *.lst
 *.zip
+*.sql
 script*
