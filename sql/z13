@@ -1,0 +1,19 @@
+SELECT
+   Z13_REC_KEY || '	'
+ || TO_CHAR(NVL(Z13_YEAR,0),'FM0000')  || '	'
+ || TO_CHAR(NVL(Z13_OPEN_DATE,0),'FM00000000')  || '	'
+ || Z13_UPDATE_DATE || '	'
+ || Z13_CALL_NO_KEY || '	'
+ || Z13_CALL_NO_CODE || '	'
+ || Z13_CALL_NO || '	'
+ || Z13_AUTHOR_CODE || '	'
+ || Z13_AUTHOR || '	'
+ || Z13_TITLE_CODE || '	'
+ || Z13_TITLE || '	'
+ || Z13_IMPRINT_CODE || '	'
+ || Z13_IMPRINT || '	'
+ || Z13_ISBN_ISSN_CODE || '	'
+ || Z13_ISBN_ISSN || '	'
+ || Z13_UPD_TIME_STAMP || '	'
+ FROM Z13
+ WHERE Z13_REC_KEY = ?

@@ -1,0 +1,10 @@
+SELECT
+   Z308_REC_KEY || '	'
+ || Z308_VERIFICATION || '	'
+ || Z308_VERIFICATION_TYPE || '	'
+ || Z308_ID || '	'
+ || Z308_STATUS || '	'
+ || Z308_ENCRYPTION || '	'
+ || Z308_UPD_TIME_STAMP || '	'
+ FROM Z308
+WHERE Z308_REC_KEY = rpad(?,262)

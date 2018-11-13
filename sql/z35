@@ -1,0 +1,23 @@
+SELECT
+   Z35_REC_KEY || '	'
+ || TO_CHAR(NVL(Z35_ITEM_SEQUENCE,0),'FM000000')  || '	'
+ || Z35_ID || '	'
+ || Z35_MATERIAL || '	'
+ || Z35_SUB_LIBRARY || '	'
+ || Z35_STATUS || '	'
+ || TO_CHAR(NVL(Z35_EVENT_DATE,0),'FM00000000')  || '	'
+ || TO_CHAR(NVL(Z35_EVENT_HOUR,0),'FM0000')  || '	'
+ || Z35_ITEM_STATUS || '	'
+ || Z35_BOR_STATUS || '	'
+ || Z35_BOR_TYPE || '	'
+ || Z35_CATALOGER_NAME || '	'
+ || Z35_EVENT_TYPE || '	'
+ || Z35_TYPE || '	'
+ || Z35_IP_ADDRESS || '	'
+ || Z35_QUERY || '	'
+ || Z35_TIME_STAMP || '	'
+ || Z35_NOTE || '	'
+ || Z35_UPD_TIME_STAMP || '	'
+ || Z35_IP_ADDRESS_V6 || '	'
+ FROM Z35
+WHERE Z35_TIME_STAMP = ?
