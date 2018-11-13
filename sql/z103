@@ -1,0 +1,18 @@
+SELECT
+   Z103_REC_KEY || '	'
+ || Z103_REC_KEY_1 || '	'
+ || Z103_LKR_LIBRARY || '	'
+ || TO_CHAR(NVL(Z103_LKR_DOC_NUMBER,0),'FM000000000')  || '	'
+ || Z103_LKR_TYPE || '	'
+ || Z103_LKR_TEXT_N_ALPHA || '	'
+ || Z103_LKR_TEXT_N || '	'
+ || Z103_LKR_TEXT_M_ALPHA || '	'
+ || Z103_LKR_TEXT_M || '	'
+ || Z103_ENUMERATION_A || '	'
+ || Z103_ENUMERATION_B || '	'
+ || Z103_ENUMERATION_C || '	'
+ || Z103_CHRONOLOGICAL_I || '	'
+ || Z103_CHRONOLOGICAL_J || '	'
+ || Z103_SORT || '	'
+ FROM Z103
+ WHERE Z103_REC_KEY = ?
