@@ -28,6 +28,7 @@ echo "`date` in dw_dump_table $lib $table"
 
 set flagfile = $dir/${lib}_${table}_flags
 set datafile = $dir/${lib}_${table}_data
+#set datafilepython = $dir/${lib}_${table}_
 
 set table_u = `echo $table | tr '[a-z]' '[A-Z]'`
 echo $table_u

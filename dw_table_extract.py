@@ -6,10 +6,11 @@ from subprocess import Popen, PIPE
 import sys, getopt
 import re
 import pdb
-import time
+from datetime import datetime
 
 # start time
-start_time = time.strftime("%Y-%m-%d %H:%M:%S")
+#start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+start_time = datetime.now()
 
 
 # get vars from cli arguments
@@ -87,12 +88,11 @@ in_contents = read_in_file(infile)
 OUT = open_out_file(outfile)
 
 # write header first line
-OUT.write('H\t' + 'DW Extract Job Number(work on this)\t' + start_time + '\t' + outfile + '\n')
+OUT.write('H\t' + 'DW Extract Job Number(work on this)\t' + str(start_time) + '\t' + outfile + '\n')
 
 # get column names
 cursor.execute('select * from ' + table)
 col_names = [row[0] for row in cursor.description]
-pdb.set_trace()
 ts_columns = '\t'.join(map(str, col_names))
 # write header second line with column names
 OUT.write('H\t' + ts_columns + '\n') 
@@ -125,9 +125,9 @@ for line in in_contents:
 
 
 # end time
-end_time = time.strftime("%Y-%m-%d %H:%M:%S")
+end_time = datetime.now()
 # write trailer record
-OUT.write('T\t' + end_time + '\t' + str(record_count) + '\n')
+OUT.write('T\t' + str(end_time) + '\t' + str(record_count) + '\n')
 # close OUT 
 OUT.close()                    
 
