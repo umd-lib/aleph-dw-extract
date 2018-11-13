@@ -80,6 +80,8 @@ def open_out_file(outfile):
 in_contents = read_in_file(infile)
 OUT = open_out_file(outfile)
 
+
+
 # use the flag and key from the flag file to build SQL statements
 for line in in_contents:
     #print line
@@ -94,8 +96,8 @@ for line in in_contents:
         if flag == 'D':
             print "Unexpected result for: " + str(flag) + ' ' + str(key)
         else:
-            # check this row[0] business
-            OUT.write(str(flag)+'\t'+str(key)+'\t' + str(row_data) + '\n')
+            # write a D \t flag \t key \t data
+            OUT.write('D\t' + str(flag)+'\t'+str(key)+'\t' + str(row_data) + '\n')
     else:
         if flag == 'D':
             OUT.write(str(flag)+'\t'+str(key)+'\n')
