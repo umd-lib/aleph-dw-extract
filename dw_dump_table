@@ -14,6 +14,7 @@
 #   2018/09/20: Hans
 #     - first cut
 #
+set start =`date +"%Y%m%d_%H%M%S`
 
 if ($#argv != 2) then
     echo "Usage: $0 lib table"
@@ -27,8 +28,8 @@ set table = $argv[2]
 echo "`date` in dw_dump_table $lib $table"
 
 set flagfile = $dir/${lib}_${table}_flags
-set datafile = $dir/${lib}_${table}_data
-#set datafilepython = $dir/${lib}_${table}_
+#set datafile = $dir/${lib}_${table}_data
+set datafile = $dir/${lib}_${table}_${start}_1.txt
 
 set table_u = `echo $table | tr '[a-z]' '[A-Z]'`
 echo $table_u
@@ -42,5 +43,5 @@ if (-s $flagfile) then
 	cmp $datafile $datafile.new
     endif
 else
-    cp /dev/null $dir/${lib}_${table}_data
+    cp /dev/null $datafile
 endif
