@@ -29,13 +29,15 @@ set tables = ''
 
 if ($lib == mai01) then
     set tables = 'z00 z103 z13 z13u'
+else if ($lib == mai39) then
+    set tables = 'z00 z103 z13 z13u'
 else if ($lib == mai60) then
     set tables = 'z00 z103 z13 z13u'
 else if ($lib == mai50) then
-    set tables = 'z00 z103 z13 z13u z30 z303 z304 z305 z308 z30h z35 z36 z36h'
+    set tables = 'z36 z36h z30 z30h z00 z103 z13 z13u z303 z304 z305 z308 z35'
 endif
 
-echo tables: $tables
+# echo tables: $tables
 
 # extract trigger table
 sqlplus -s <<EOF > /dev/null
@@ -55,6 +57,8 @@ EOF
 ./a1 $dir/${lib}_z800.lst > $dir/${lib}_z800_a
 
 ./a2 $dir/${lib}_z800.lst > $dir/${lib}_z800_b
+./a2.py $dir/${lib}_z800.lst > $dir/${lib}_z800_bb
+cmp $dir/${lib}_z800_b $dir/${lib}_z800_bb
 
 foreach table ($tables)
     dw_dump_table $lib $table

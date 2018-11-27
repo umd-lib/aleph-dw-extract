@@ -97,10 +97,10 @@ for line in in_contents:
             print "Unexpected result for: " + str(flag) + ' ' + str(key)
         else:
             # write a D \t flag \t key \t data
-            OUT.write('D\t' + str(flag)+'\t'+str(key)+'\t' + str(row_data) + '\n')
+            OUT.write(str(flag)+'\t'+str(key)+'\t' + str(row_data) + '\n')
     else:
         if flag == 'D':
-            OUT.write('D\t' + str(flag)+'\t'+str(key)+'\n')
+            OUT.write(str(flag)+'\t'+str(key)+'\n')
         else:
             print "Unexpected missing record for: " + str(flag) + ' ' + str(key)
 

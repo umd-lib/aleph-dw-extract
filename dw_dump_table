@@ -30,16 +30,16 @@ set flagfile = $dir/${lib}_${table}_flags
 set datafile = $dir/${lib}_${table}_data
 
 set table_u = `echo $table | tr '[a-z]' '[A-Z]'`
-echo $table_u
+# echo $table_u
 grep " $table_u " $dir/${lib}_z800_b | grep -v ^Z > $flagfile
 if (-s $flagfile) then
     if ($table_u == Z00) then
-	cut -c23- $flagfile | doc-extract -l $lib -d > $datafile
-    else
-	dw_table_extract $lib $table $flagfile $datafile
-	dw_table_extract.py $lib $table $flagfile $datafile.new
-	cmp $datafile $datafile.new
+	cut -c23- $flagfile | doc-extract -l $lib -d > $datafile.seq
+	dw_table_extract_z00 $lib $table $flagfile $datafile.full
     endif
+    dw_table_extract $lib $table $flagfile $datafile
+    dw_table_extract.py $lib $table $flagfile $datafile.new
+    cmp $datafile $datafile.new
 else
     cp /dev/null $dir/${lib}_${table}_data
 endif

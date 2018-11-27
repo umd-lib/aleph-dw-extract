@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/lims/22/bin/python
 import fileinput
 import pdb
 import sys
@@ -29,7 +29,9 @@ class ActionSeries:
         # determine final flag action
 	first = self.flags[0]
 	last = self.flags[-1]
-	if (first == 'D' and last == 'I'):
+        if (first == 'M'):
+            first = 'I'
+	if (first == 'D' and (last == 'I' or last == 'U' or last == 'M')):
 	    option = 'U'
 	elif (first == 'I' and last == 'D'):
 	    option = 'Z'
