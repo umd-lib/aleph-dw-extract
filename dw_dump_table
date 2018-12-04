@@ -14,7 +14,8 @@
 #   2018/09/20: Hans
 #     - first cut
 #
-set start =`date +"%Y%m%d_%H%M%S`
+
+set start = `date +%Y%m%d_%H%M%S`
 
 if ($#argv != 2) then
     echo "Usage: $0 lib table"

@@ -8,10 +8,6 @@ import re
 import pdb
 from datetime import datetime
 
-# start time
-#start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-start_time = datetime.now()
-
 
 # get vars from cli arguments
 if (len(sys.argv) != 5):
@@ -20,6 +16,7 @@ library = sys.argv[1]
 table = sys.argv[2]
 infile = sys.argv[3]
 outfile = sys.argv[4]
+suffix = sys.arg[5]
 
 # function to set up the SQL
 def setup_sql():
@@ -88,7 +85,7 @@ in_contents = read_in_file(infile)
 OUT = open_out_file(outfile)
 
 # write header first line
-OUT.write('H\t' + 'DW Extract Job Number(work on this)\t' + str(start_time) + '\t' + outfile + '\n')
+OUT.write('H\t' + 'DW Extract Job Number(work on this)\t' + str(suffix) + '\t' + outfile + '\n')
 
 # get column names
 cursor.execute('select * from ' + table)

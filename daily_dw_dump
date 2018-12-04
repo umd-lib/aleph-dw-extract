@@ -28,7 +28,7 @@ endif
 
 echo "`date` ** DW dump starting **"
 
-cd $lims_base/dw
+cd $lims_base/aleph-dw-extract
 
 set today = `/lims/bin/date_diff 0`
 set yesterday = `/lims/bin/date_diff -1`
