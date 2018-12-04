@@ -6,13 +6,17 @@ from subprocess import Popen, PIPE
 import sys, getopt
 import re
 import pdb
+from datetime import datetime
 
+
+# get vars from cli arguments
 if (len(sys.argv) != 5):
      print "Bad number of parameters.\n" 
 library = sys.argv[1]
 table = sys.argv[2]
 infile = sys.argv[3]
 outfile = sys.argv[4]
+suffix = sys.arg[5]
 
 # function to set up the SQL
 def setup_sql():
@@ -80,8 +84,18 @@ def open_out_file(outfile):
 in_contents = read_in_file(infile)
 OUT = open_out_file(outfile)
 
+# write header first line
+OUT.write('H\t' + 'DW Extract Job Number(work on this)\t' + str(suffix) + '\t' + outfile + '\n')
 
+# get column names
+cursor.execute('select * from ' + table)
+col_names = [row[0] for row in cursor.description]
+ts_columns = '\t'.join(map(str, col_names))
+# write header second line with column names
+OUT.write('H\t' + ts_columns + '\n') 
 
+# count detail records
+record_count = 0
 # use the flag and key from the flag file to build SQL statements
 for line in in_contents:
     #print line
@@ -97,13 +111,20 @@ for line in in_contents:
             print "Unexpected result for: " + str(flag) + ' ' + str(key)
         else:
             # write a D \t flag \t key \t data
-            OUT.write(str(flag)+'\t'+str(key)+'\t' + str(row_data) + '\n')
+            OUT.write('D\t' + str(flag)+'\t'+str(key)+'\t' + str(row_data) + '\n')
+	    record_count+=1
     else:
         if flag == 'D':
-            OUT.write(str(flag)+'\t'+str(key)+'\n')
+            OUT.write('D\t' + str(flag)+'\t'+str(key)+'\n')
+	    record_count+=1
         else:
             print "Unexpected missing record for: " + str(flag) + ' ' + str(key)
 
+
+# end time
+end_time = datetime.now()
+# write trailer record
+OUT.write('T\t' + str(end_time) + '\t' + str(record_count) + '\n')
 # close OUT 
 OUT.close()                    
 
