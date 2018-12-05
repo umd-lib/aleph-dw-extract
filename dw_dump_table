@@ -32,7 +32,7 @@ set datafile = $dir/${lib}_${table}_${suffix}_data
 
 set table_u = `echo $table | tr '[a-z]' '[A-Z]'`
 # echo $table_u
-grep " $table_u " $dir/${lib}_z800_b | grep -v ^Z > $flagfile
+grep " $table_u " $dir/${lib}_z800_${suffix}_b | grep -v ^Z > $flagfile
 if (-s $flagfile) then
     if ($table_u == Z00) then
 	cut -c23- $flagfile | doc-extract -l $lib -d > $datafile.seq

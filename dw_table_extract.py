@@ -10,13 +10,13 @@ from datetime import datetime
 
 
 # get vars from cli arguments
-if (len(sys.argv) != 5):
+if (len(sys.argv) != 6):
      print "Bad number of parameters.\n" 
 library = sys.argv[1]
 table = sys.argv[2]
 infile = sys.argv[3]
 outfile = sys.argv[4]
-suffix = sys.arg[5]
+suffix = sys.argv[5]
 
 # function to set up the SQL
 def setup_sql():

@@ -56,9 +56,9 @@ where z800_time_stamp between '$start' and '$end'
 order by 3,4,2;
 EOF
 
-./a1 $dir/${lib}_z800.lst > $dir/${lib}_z800_${suffix}_a
+./a1 $dir/${lib}_z800_$suffix.lst > $dir/${lib}_z800_${suffix}_a
 
-./a2.py $dir/${lib}_z800.lst > $dir/${lib}_z800_${suffix}_b
+./a2.py $dir/${lib}_z800_$suffix.lst > $dir/${lib}_z800_${suffix}_b
 
 foreach table ($tables)
     dw_dump_table $lib $table $suffix
