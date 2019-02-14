@@ -90,12 +90,12 @@ OUT = open_out_file(outfile)
 # write header first line
 OUT.write('H\t' + 'DW Extract Job Number(work on this)\t' + str(start_time) + '\t' + outfile + '\n')
 
-# get column names
+# get column names in lowercase
 cursor.execute('select * from ' + table)
-col_names = [row[0] for row in cursor.description]
+col_names = [row[0].lower() for row in cursor.description]
 ts_columns = '\t'.join(map(str, col_names))
 # write header second line with column names
-OUT.write('H\t' + ts_columns + '\n') 
+OUT.write('rec_type_cd\tdb_operation_cd\trec_trigger_key\t' + ts_columns + '\n') 
 
 # count detail records
 record_count = 0
