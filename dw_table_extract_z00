@@ -2,7 +2,7 @@
 
 use DBI qw(:sql_types);
 
-use constant LONGREADLEN => 20 * 1024;
+use constant LONGREADLEN => 60 * 1024;
 
 use bytes;
 
