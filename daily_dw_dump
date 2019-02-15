@@ -43,7 +43,7 @@ mkdir -p $dir
 echo "start $start"
 echo "end   $end"
 
-foreach lib (mai01 mai60 mai50)
+foreach lib (mai50 mai01 mai60 mai39)
     echo "`date` ** dumping $lib **"
     csh -f ./dw_dump_library $lib
 end

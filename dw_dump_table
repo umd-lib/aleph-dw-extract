@@ -16,32 +16,30 @@
 #
 set start =`date +"%Y%m%d_%H%M%S`
 
-if ($#argv != 2) then
-    echo "Usage: $0 lib table"
+if ($#argv != 3) then
+    echo "Usage: $0 lib table suffix"
     exit
 endif
 
 set lib = $argv[1]
 set pass = `get_ora_passwd $lib`
 set table = $argv[2]
+set suffix = $argv[3]
 
 echo "`date` in dw_dump_table $lib $table"
 
-set flagfile = $dir/${lib}_${table}_flags
-#set datafile = $dir/${lib}_${table}_data
-set datafile = $dir/${lib}_${table}_${start}_1.txt
+set flagfile = $dir/${lib}_${table}_${suffix}_flags
+set datafile = $dir/${lib}_${table}_${suffix}_data
 
 set table_u = `echo $table | tr '[a-z]' '[A-Z]'`
-echo $table_u
-grep " $table_u " $dir/${lib}_z800_b | grep -v ^Z > $flagfile
+# echo $table_u
+grep " $table_u " $dir/${lib}_z800_${suffix}_b | grep -v ^Z > $flagfile
 if (-s $flagfile) then
     if ($table_u == Z00) then
-	cut -c23- $flagfile | doc-extract -l $lib -d > $datafile
-    else
-	dw_table_extract $lib $table $flagfile $datafile
-	dw_table_extract.py $lib $table $flagfile $datafile.new
-	cmp $datafile $datafile.new
+	cut -c23- $flagfile | doc-extract -l $lib -d > $datafile.seq
+	dw_table_extract_z00 $lib $table $flagfile $datafile.full
     endif
+    dw_table_extract.py $lib $table $flagfile $datafile $suffix
 else
-    cp /dev/null $datafile
+    cp /dev/null $dir/${lib}_${table}_${suffix}_data
 endif

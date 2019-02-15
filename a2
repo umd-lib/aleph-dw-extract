@@ -30,7 +30,8 @@ sub dumpit
 	$op = '?';
 	$first = substr($flags,0,1);
 	$last  = substr($flags,-1,1);
-	if ($first eq 'D' && $last eq 'I') {
+	$first = 'I' if $first eq 'M';
+	if ($first eq 'D' && ($last eq 'I' || $last eq 'U' || $last eq 'M')) {
 	    $op = 'U';
 	} elsif ($first eq 'I' && $last eq 'D') {
 	    $op = 'Z';
