@@ -14,8 +14,7 @@ start_time = datetime.now()
 
 
 # get vars from cli arguments
-if (len(sys.argv) != 5):
-#if (len(sys.argv) != 6):
+if (len(sys.argv) != 6):
      print "Bad number of parameters.\n" 
 library = sys.argv[1]
 table = sys.argv[2]
