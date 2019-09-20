@@ -122,9 +122,11 @@ for line in in_contents:
 	    record_count+=1
     else:
         if flag == 'D':
-            OUT.write('D\t' + str(flag)+'\t'+str(key)+'\n')
+	    # repeated the key in fourth column because Deletes are missing a rec_key (which is part of the PK)
+            OUT.write('D\t' + str(flag)+'\t'+str(key)+'\t' + str(key) + '\n')
 	    record_count+=1
         else:
+	    pdb.set_trace()
             print "Unexpected missing record for: " + str(flag) + ' ' + str(key)
 
 
