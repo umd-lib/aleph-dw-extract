@@ -113,7 +113,8 @@ for line in in_contents:
         row_data = row[0][0]
         if flag == 'D':
             if table == 'z00':
-                OUT.write('D\tD\t'+str(key)+'\n')
+		# repeated str(key) in the 4th column so rec_key is not null
+                OUT.write('D\tD\t' + str(key)+'\t' + str(key) + '\n')
             else:
                 print "Unexpected result for: " + str(flag) + ' ' + str(key)
         else:
@@ -126,7 +127,6 @@ for line in in_contents:
             OUT.write('D\t' + str(flag)+'\t'+str(key)+'\t' + str(key) + '\n')
 	    record_count+=1
         else:
-	    pdb.set_trace()
             print "Unexpected missing record for: " + str(flag) + ' ' + str(key)
 
 
