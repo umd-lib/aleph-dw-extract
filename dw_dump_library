@@ -28,15 +28,17 @@ set suffix = `date +%Y%m%d_%H%M%S`
 echo "`date` in dw_dump_library $lib"
 
 set tables = ''
+set fulltables = ''
 
 if ($lib == mai01) then
     set tables = 'z00 z103 z13 z13u'
 else if ($lib == mai39) then
     set tables = 'z00 z103 z13 z13u'
 else if ($lib == mai60) then
-    set tables = 'z00 z103 z13 z13u'
+    set tables = 'z00 z103 z13 z13u z103_bib'
 else if ($lib == mai50) then
     set tables = 'z36 z36h z30 z30h z00 z103 z103_bib z13 z13u z303 z304 z305 z308 z35'
+    set fulltables = 'z103_bib_full z30_full'
 endif
 
 # echo tables: $tables
@@ -62,4 +64,8 @@ EOF
 
 foreach table ($tables)
     dw_dump_table $lib $table $suffix
+end
+
+foreach table ($fulltables)
+    dw_dump_full_table $lib $table $suffix
 end

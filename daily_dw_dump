@@ -33,7 +33,7 @@ cd $lims_base/dw
 set today = `/lims/bin/date_diff 0`
 set yesterday = `/lims/bin/date_diff -1`
 
-setenv dir $today
+setenv dir data/$today
 setenv start  ${yesterday}034000000001
 setenv end        ${today}034000000000
 
@@ -47,5 +47,9 @@ foreach lib (mai50 mai01 mai60 mai39)
     echo "`date` ** dumping $lib **"
     csh -f ./dw_dump_library $lib
 end
+
+csh -f ./dw_dump_manual_files
+
+scp -p -r -q $dir/ hans@dw-etl.lib.umd.edu:incoming/
 
 echo "`date` ** DW dump done "

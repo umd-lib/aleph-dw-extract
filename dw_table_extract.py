@@ -112,7 +112,10 @@ for line in in_contents:
     if row:
         row_data = row[0][0]
         if flag == 'D':
-            print "Unexpected result for: " + str(flag) + ' ' + str(key)
+            if table == 'z00':
+                OUT.write('D\tD\t'+str(key)+'\n')
+            else:
+                print "Unexpected result for: " + str(flag) + ' ' + str(key)
         else:
             # write a D \t flag \t key \t data
             OUT.write('D\t' + str(flag)+'\t'+str(key)+'\t' + str(row_data) + '\n')

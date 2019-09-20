@@ -32,13 +32,14 @@ while (<IN>) {
     $a = $sth->fetchrow_arrayref();
     if ($a) {
 	if ($flag eq 'D') {
-	    print STDERR "Unexpected result for $flag $key\n";
+	    # print STDERR "Unexpected result for $flag $key\n";
+	    print OUT "D\t$flag\t$key\t\n";
 	} else {
-	    print OUT "$flag\t$key\t",$a->[0],"\t",$a->[1],"\n";
+	    print OUT "D\t$flag\t$key\t",$a->[0],$a->[1],"\n";
 	}
     } else {
 	if ($flag eq 'D') {
-	    print OUT "$flag\t$key\n";
+	    print OUT "D\t$flag\t$key\n";
 	} else {
 	    print STDERR "Unexpected missing record for $flag $key\n";
 	}

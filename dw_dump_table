@@ -28,18 +28,20 @@ set suffix = $argv[3]
 
 echo "`date` in dw_dump_table $lib $table"
 
-set flagfile = $dir/${lib}_${table}_${suffix}_flags
-set datafile = $dir/${lib}_${table}_${suffix}_data
+set fileroot = $dir/${lib}_${table}
+set flagfile = ${fileroot}_flags
 
 set table_u = `echo $table | tr '[a-z]' '[A-Z]'`
 # echo $table_u
 grep " $table_u " $dir/${lib}_z800_${suffix}_b | grep -v ^Z > $flagfile
 if (-s $flagfile) then
     if ($table_u == Z00) then
-	cut -c23- $flagfile | doc-extract -l $lib -d > $datafile.seq
-	dw_table_extract_z00 $lib $table $flagfile $datafile.full
+	mv $flagfile ${flagfile}.raw
+	dw_clean_flags_z00 $lib $table ${flagfile}.raw $flagfile
+	cut -c23- $flagfile | doc-extract -l $lib -d > ${fileroot}_field_data
+	dw_table_extract_z00 $lib $table $flagfile ${fileroot}_full_data
     endif
-    dw_table_extract.py $lib $table $flagfile $datafile $suffix
+    dw_table_extract.py $lib $table $flagfile ${fileroot}_data $suffix
 else
-    cp /dev/null $dir/${lib}_${table}_${suffix}_data
+    cp /dev/null ${fileroot}_data
 endif
