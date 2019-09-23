@@ -52,4 +52,9 @@ csh -f ./dw_dump_manual_files
 
 scp -p -r -q $dir/ hans@dw-etl.lib.umd.edu:incoming/
 
+echo "`date` ** compressing files "
+
+gzip $dir/mai50_z103_bib_full_data
+gzip $dir/mai50_z30_full_data
+
 echo "`date` ** DW dump done "
