@@ -1,0 +1,105 @@
+#!/lims/bin/perl
+
+use DBI qw(:sql_types);
+
+use constant LONGREADLEN => 60 * 1024;
+
+use bytes;
+
+if ($#ARGV != 2) {
+    print STDERR "Bad number of parameters\n";
+    exit 1;
+}
+
+$lib = $ARGV[0];
+$startdoc = $ARGV[1];
+$enddoc = $ARGV[2];
+
+$startdoc = '000000000';
+$enddoc =   '001000000';
+$keylength = 0;
+
+$firstdate = '';
+$lastdate = '';
+$del = '';
+
+SetupSql();
+
+
+$sth->execute();
+while ( $a = $sth->fetchrow_arrayref()) {
+    $del = ParseRecord($a->[1]);
+    print $a->[0]," $del $firstdate $lastdate\n";
+}
+
+
+sub SetupSql {
+
+#     $insql = "sql/$table";
+#     open IN,"<$insql" or die "Could not open input file $insql.";
+# 
+#     $sql = '';
+#     while (<IN>) {
+# 	chomp;
+# 	if ( /^keylength=(\d+)$/ ) {
+# 	    $keylength = $1;
+# 	} else {
+# 	    $sql .= "$_ ";
+# 	}
+#     }
+#     close IN;
+# 	    
+
+    $sql = "select z00_doc_number,z00_data from z00 where z00_doc_number between '$startdoc' and '$enddoc' order by 1";
+    $pass = `get_ora_passwd $lib`;
+
+    chomp $pass;
+    $attr = { RaiseError => 1, AutoCommit => 0, LongReadLen => LONGREADLEN };
+    $dbh = DBI->connect("DBI:Oracle:$ENV{'aleph_db'}", $lib, $pass, $attr);
+    $sth = $dbh->prepare($sql);
+}
+
+sub ParseRecord {
+    my $rec = shift;
+    my $reclen = length($rec);
+    my $i = 0;
+    my $len;
+    my $text;
+    $firstdate = '99999999';
+    $lastdate =  '00000000';
+    $del = ' ';
+
+    while ($i < $reclen) {
+	$len = substr($rec,$i,4);
+	$i += 4;
+	if ($len !~ /\d{4}/) {
+	    print STDERR "Bad rec format $key\n";
+	    return '';
+	}
+	if ( $i+$len > $reclen) {
+	    print STDERR "Short record $key\n";
+	    return '';
+	}
+	$text = substr($rec,$i,$len);
+	$i += $len;
+	# print "$text\n";
+	if ($text =~ /^DEL.*\$\$aY/) {
+	    $del = 'D';
+	}
+	if ($text =~ /^STA.*\$\$aDELETED/) {
+	    $del = 'S';
+	}
+	if ($text =~ /^CAT.*\$\$c(\d{8})($|\$)/) {
+	    my $date = $1;
+	    if ($date lt '19800000' or $date gt '20200000') {
+		print STDERR "bad date: $text\n";
+	    } else {
+		$firstdate = $date if $date lt $firstdate;
+		$lastdate = $date if $date gt $lastdate;
+	    }
+	}
+    }
+
+    return $del;
+}
+

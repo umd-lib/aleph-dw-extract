@@ -7,3 +7,9 @@
 *.zip
 *.sql
 script*
+manual-files/*
+data/*
+test
+testout
+work/
+.hans/

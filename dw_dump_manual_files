@@ -1,0 +1,25 @@
+#!/bin/csh -f
+
+# dw_dump_manual_files
+#
+# Script to dump manual files
+#
+# Environment variables:
+#   dir   working directory
+#
+# Revision History
+#
+#   2019/09/20: Hans
+#     - first cut
+#
+
+
+echo "`date` in dw_dump_manual_files"
+
+set src = manual-files
+set files = 'item-process-status-dimension.txt item-status-dimension.txt library-collection-dimension.txt library-entity-dimension.txt material-form-dimension.txt member-library-dimension.txt'
+
+foreach f ($files)
+    cp -p $src/$f $dir/mpf_$f
+end
+

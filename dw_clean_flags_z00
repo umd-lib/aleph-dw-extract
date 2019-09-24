@@ -1,0 +1,119 @@
+#!/lims/bin/perl
+
+use DBI qw(:sql_types);
+
+use constant LONGREADLEN => 60 * 1024;
+
+use bytes;
+
+if ($#ARGV != 3) {
+    print STDERR "Bad number of parameters\n";
+    exit 1;
+}
+
+$lib = $ARGV[0];
+$table = $ARGV[1];
+$infile = $ARGV[2];
+$outfile = $ARGV[3];
+
+$keylength = 0;
+
+SetupSql();
+
+open IN, "<$infile" or die "Could not open input file $infile.";
+open OUT, ">$outfile" or die "Could not open output file $outfile.";
+
+while (<IN>) {
+    chomp;
+    $flag = substr($_,0,1);
+    $key = substr($_,22);
+    $sth->bind_param(1,$key,SQL_CHAR);
+    $sth->execute();
+    $a = $sth->fetchrow_arrayref();
+    if ($a) {
+	$del = ParseRecord($a->[0]);
+	# print "Check del $key $del\n";
+	if ($flag eq 'D') {
+	    print STDERR "Unexpected result for $flag $key\n";
+	} else {
+	    $newflag = $flag;
+	    if ($del) {
+		if ($flag eq 'I') {
+		    $newflag = 'Z';
+		    print STDERR "Flag change 'I'->'Z' $key\n" unless ($lib eq 'mai50' || $lib eq 'mai60');
+		} else {
+		    $newflag = 'D';
+		}
+	    }
+	    print OUT $newflag,substr($_,1),"\n" unless $newflag eq 'Z';
+	    # print OUT "D\t$flag\t$key\t",$a->[0],$a->[1],"\n";
+	}
+    } else {
+	if ($flag eq 'D') {
+	    print OUT $flag,substr($_,1),"\n";
+	    # print OUT "D\t$flag\t$key\n";
+	} else {
+	    print STDERR "Unexpected missing record for $flag $key\n";
+	}
+    }
+}
+
+
+sub SetupSql {
+
+#     $insql = "sql/$table";
+#     open IN,"<$insql" or die "Could not open input file $insql.";
+# 
+#     $sql = '';
+#     while (<IN>) {
+# 	chomp;
+# 	if ( /^keylength=(\d+)$/ ) {
+# 	    $keylength = $1;
+# 	} else {
+# 	    $sql .= "$_ ";
+# 	}
+#     }
+#     close IN;
+# 	    
+
+    $sql = 'select z00_data from z00 where z00_doc_number = ?';
+    $pass = `get_ora_passwd $lib`;
+
+    chomp $pass;
+    $attr = { RaiseError => 1, AutoCommit => 0, LongReadLen => LONGREADLEN };
+    $dbh = DBI->connect("DBI:Oracle:$ENV{'aleph_db'}", $lib, $pass, $attr);
+    $sth = $dbh->prepare($sql);
+}
+
+sub ParseRecord {
+    my $rec = shift;
+    my $reclen = length($rec);
+    my $i = 0;
+    my $len;
+    my $text;
+
+    while ($i < $reclen) {
+	$len = substr($rec,$i,4);
+	$i += 4;
+	if ($len !~ /\d{4}/) {
+	    print STDERR "Bad rec format $key\n";
+	    return '';
+	}
+	if ( $i+$len > $reclen) {
+	    print STDERR "Short record $key\n";
+	    return '';
+	}
+	$text = substr($rec,$i,$len);
+	$i += $len;
+	# print "$text\n";
+	if ($text =~ /^DEL.*\$\$aY/) {
+	    return 'D';
+	}
+	if ($text =~ /^STA.*\$\$aDELETED/) {
+	    return 'S';
+	}
+    }
+
+    return '';
+}
+

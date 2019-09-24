@@ -1,0 +1,15 @@
+#!/lims/bin/perl
+
+my $badline=0;
+my $lineno = 0;
+
+while (<>) {
+      chomp;
+      $lineno++;
+      my ($num, $fld, $ch, $txt);
+      if ($_ =~ /^(\d{9}) (.....) (.) (.*)$/) {
+	  print "$1\t$2\t$3\t$4\r\n";
+      } else {
+	  $badline = $lineno unless $lineno;
+      }
+}

@@ -1,0 +1,33 @@
+#!/bin/csh -f
+
+# dw_dump_table
+#
+# Script to do a full dump of specific table
+#
+# Environment variables:
+#   dir   working directory
+#   start first timestamp to extract
+#   end   last timestamp to extract
+#
+# Revision History
+#
+#   2019/09/18: Hans
+#     - first cut
+#
+set start = `date +"%Y%m%d_%H%M%S"`
+
+if ($#argv != 3) then
+    echo "Usage: $0 lib table suffix"
+    exit
+endif
+
+set lib = $argv[1]
+set pass = `get_ora_passwd $lib`
+set table = $argv[2]
+set suffix = $argv[3]
+
+echo "`date` in dw_dump_table $lib $table"
+
+set fileroot = $dir/${lib}_${table}
+
+dw_full_table_extract.py $lib $table x ${fileroot}_data $suffix
