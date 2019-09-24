@@ -48,7 +48,9 @@ foreach lib (mai50 mai01 mai60 mai39)
     csh -f ./dw_dump_library $lib
 end
 
-csh -f ./dw_dump_manual_files
+#csh -f ./dw_dump_manual_files
+# dumping only the incremental changes in manual files
+python dw_dump_manual_files_delta.py
 
 scp -p -r -q $dir/ hans@dw-etl.lib.umd.edu:incoming/
 
