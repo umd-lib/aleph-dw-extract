@@ -38,7 +38,11 @@ if (-s $flagfile) then
     if ($table_u == Z00) then
 	mv $flagfile ${flagfile}.raw
 	dw_clean_flags_z00 $lib $table ${flagfile}.raw $flagfile
-	cut -c23- $flagfile | doc-extract -l $lib -d > ${fileroot}_field_data
+	# add headers to field_data files
+	set NOW = `date +"%Y-%m-%d %T"`
+	printf "H\tDW Extract Job Number(work on this)\t$NOW\t$dir/${lib}_z800_${suffix}_b\n" > ${fileroot}_field_data
+	printf "z00_doc_number\tz30_marc_rec_field_cd\tUNUSED\tz00_marc_rec_field_txt\n" >> ${fileroot}_field_data
+	cut -c23- $flagfile | doc-extract -l $lib -d >> ${fileroot}_field_data
 	dw_table_extract_z00 $lib $table $flagfile ${fileroot}_full_data
     endif
     dw_table_extract.py $lib $table $flagfile ${fileroot}_data $suffix
