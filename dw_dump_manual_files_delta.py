@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import sys
 from os import listdir
+from shutil import copyfile
 import os
 import pdb
 
@@ -14,11 +15,16 @@ Then only the changed lines are written to today's mpf files.
 """
 # get today's date
 today = datetime.today()
-next_date = today.strftime('%Y%m%d')
+today_date = today.strftime('%Y%m%d')
+today_date_path = os.path.join('data', today_date)
 
 # figure out previous date
 yesterday = today - timedelta(days=1)
-previous_date = yesterday.strftime('%Y%m%d')
+yesterday_date = yesterday.strftime('%Y%m%d')
+yesterday_date_path = os.path.join('data', yesterday_date)
+
+# path to manual files
+mpf_path = 'manual-files'
 
 mpf_files = [
     'item-status-dimension.txt',
@@ -29,22 +35,24 @@ mpf_files = [
     'member-library-dimension.txt'
     ]
 
+# copy all mpf files into today's directory
+for filename in mpf_files:
+    manual_file_path = os.path.join(mpf_path, filename)
+    destination_file_path = os.path.join(today_date_path, filename) 
+    copyfile(manual_file_path, destination_file_path)
 
 '''
 get the first lines out of each previous mpf file and put into a dict
 '''
 first_lines = {}
 
-for file in mpf_files:
-    # get yesterday's filename
-    filename = 'mpf_' + file
-    previous_date_path = os.path.join('data', previous_date, filename)
-
-    with open(previous_date_path) as f:
+for filename in mpf_files:
+    # get yesterday's filepath
+    yesterday_file = os.path.join(yesterday_date_path, filename)
+    with open(yesterday_file) as f:
         line1 = f.readline() # header1
         line2 = f.readline() # header 2
         first_line = f.readline()
-
         first_lines[filename] = first_line
 
 
@@ -52,18 +60,18 @@ for file in mpf_files:
 use first lines to write new file of only incremental changes for today's date
 '''
 # read the MPF file until the same line is reached and stop.
-for file in mpf_files:
-    manual_file = os.path.join('manual-files', file)
+for filename in mpf_files:
 
     # output file
-    output_filename = 'mpf_' + file
+    output_filename = 'mpf_' + filename
 
-    # use the first_line from previous file from the first_lines dict
-    line_to_match = first_lines[output_filename]
+    # use the first_line from previous cumulative mpf file from the first_lines dict
+    line_to_match = first_lines[filename]
 
     output_lines = []
-
-    with open(manual_file) as f:
+    
+    today_file = os.path.join(today_date_path, filename)
+    with open(today_file) as f:
         output_lines.append(f.readline()) # header 1
         output_lines.append(f.readline()) # header 2
 
@@ -80,9 +88,8 @@ for file in mpf_files:
             line = f.readline()
 
         # create new file for the new lines (empty at first)
-        new_file_path = os.path.join('data', next_date, output_filename)
-        #new_file_path = os.path.join('temp', next_date, output_filename)
-	open(new_file_path, 'a').close()
+	new_file_path = os.path.join(today_date_path, output_filename)
+        open(new_file_path, 'a').close()
 
         # write new lines to the output file in data/{next_date}
         if has_new_lines:
