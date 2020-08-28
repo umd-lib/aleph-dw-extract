@@ -38,7 +38,8 @@ else if ($lib == mai60) then
     set tables = 'z00 z103 z13 z13u z103_bib'
 else if ($lib == mai50) then
     set tables = 'z36 z36h z30 z30h z00 z103 z103_bib z13 z13u z303 z304 z305 z308 z35'
-    set fulltables = 'z103_bib_full z30_full'
+# following commented out until we need it.  Hans  8/26/2020
+#    set fulltables = 'z103_bib_full z30_full'
 endif
 
 # echo tables: $tables

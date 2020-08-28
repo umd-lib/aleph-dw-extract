@@ -52,11 +52,14 @@ end
 # dumping only the incremental changes in manual files
 python dw_dump_manual_files_delta.py
 
-scp -p -r -q $dir/ hans@dw-etl.lib.umd.edu:incoming/
+scp -p -r -q $dir/ dwfeed@dw-etl.lib.umd.edu:incoming/
+echo transferring files to dw-etl-test
+scp -p -r -q $dir/ dwfeed@dw-etl-test.lib.umd.edu:incoming/
 
-echo "`date` ** compressing files "
+#      following commented out until we need it.  Hans  8/26/2020
+# echo "`date` ** compressing files "
 
-gzip $dir/mai50_z103_bib_full_data
-gzip $dir/mai50_z30_full_data
+# gzip $dir/mai50_z103_bib_full_data
+# gzip $dir/mai50_z30_full_data
 
 echo "`date` ** DW dump done "
